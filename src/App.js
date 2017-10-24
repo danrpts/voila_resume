@@ -5,19 +5,24 @@ import FontAwesome from "react-fontawesome";
 import { UnControlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/mode/markdown/markdown");
+require("codemirror/mode/yaml/yaml");
 
 const frontMatterText = (
-  title = "",
-  website = "",
+  name = "",
+  street = "",
   city = "",
   phone = "",
-  email = ""
+  email = "",
+  website = "",
+  linkedin = ""
 ) => `---
-title: ${title}
-website: ${website}
+name: ${name}
+street: ${street}
 city: ${city}
 phone: ${phone}
 email: ${email}
+website: ${website}
+linkedin: ${linkedin}
 ...`;
 const header1Text = (text = "header 1") => {
   const t = text.trim().replace(/#+ /, "");
@@ -81,10 +86,12 @@ function Editor(props) {
         options={options}
         value={frontMatterText(
           "Harry Potter",
-          "https://grifindor.hogwarts.edu/~harpot",
+          "1 Magic Loop",
           "Highlands, Scotland",
           "+0 (000) 000-0000",
-          "harry@hogwarts.edu"
+          "harry@hogwarts.edu",
+          "grifindor.hogwarts.edu/~harpot",
+          "linkedin.com/in/harry"
         )}
         onChange={(editor, metadata, value) => {}}
       />
@@ -92,14 +99,12 @@ function Editor(props) {
   );
 }
 
-function Welcome() {
+function Welcome(props) {
   return (
     <div className="w-100 h-100 bg-light d-flex">
       <div className="m-auto">
-        <h1 className="lead text-center">
-          Welcome to Voila!<br />
-          <small className="text-muted">The Resume Magic Wand</small>
-        </h1>
+        <h1 className="text-center display-4">Voila!</h1>
+        <p className="lead text-center">The Resume Magic Wand</p>
         <img src={logo} className="App-logo" alt="logo" />
         <p className="lead text-center">Let{"'"}s get started!</p>
         <p className="text-center">
@@ -107,6 +112,7 @@ function Welcome() {
             className="btn btn-outline-dark btn-lg btn-block text-left"
             type="button"
             style={{ fontSize: "1rem" }}
+            onClick={props.onScratchClick}
           >
             <FontAwesome
               name="i-cursor"
@@ -338,12 +344,6 @@ class App extends Component {
     };
   }
 
-  handleTitleChange = event => {
-    this.setState({
-      title: event.target.value
-    });
-  };
-
   handleWelcomeClick = event => {
     const { welcome } = this.state.aside;
     this.setState({
@@ -390,6 +390,19 @@ class App extends Component {
           // TODO do something here
         });
     }
+  };
+
+  handleScratchClick = _ => {
+    this.setState({
+      feedback: true,
+      aside: { welcome: false }
+    });
+  };
+
+  handleTitleChange = event => {
+    this.setState({
+      title: event.target.value
+    });
   };
 
   handleHeaderClick = _ => {
@@ -460,8 +473,9 @@ class App extends Component {
                 className="App-logo"
                 alt="logo"
               />
-              <span className="navbar-text lead">
-                <strong>voila</strong>resumé
+              <span className="navbar-text">
+                <span className="">voila</span>
+                <span className="font-weight-bold">resume</span>
               </span>
             </a>
             <div className="btn-group" />
@@ -478,7 +492,7 @@ class App extends Component {
             </main>
             {this.state.aside.welcome ? (
               <aside className="col p-0 border border-top-0 border-right-0 border-bottom-0">
-                <Welcome />
+                <Welcome onScratchClick={this.handleScratchClick} />
               </aside>
             ) : this.state.aside.preview ? (
               <aside className="col p-0 border border-top-0 border-right-0 border-bottom-0">
