@@ -39,21 +39,26 @@ async function convert(ctx) {
   }
 
   // can be a relative path or absolute
-  const x = join(tempDir, "resume.pdf");
+  const tempFile = join(tempDir, "resume.pdf");
 
-  console.log(x);
+  const templates = join(__dirname, "templates");
 
   const args = [
     "--standalone",
     "--from=markdown",
     "--to=latex",
-    `--output=${x}`,
+    `--output=${tempFile}`,
     `--data-dir=${tempDir}`,
-    `--template=${join(__dirname, "templates", "default.tex")}`,
+    `--template=${join(templates, "mcdowell.tex")}`,
     "--latex-engine=lualatex"
   ];
 
-  const opts = { input: ctx.request.body };
+  const opts = {
+    input: ctx.request.body,
+    env: {
+      TEXINPUTS: `.:${templates}/:`
+    }
+  };
 
   try {
     const { stdout, stderr } = await execa("pandoc", args, opts);
@@ -67,7 +72,7 @@ async function convert(ctx) {
   }
 
   ctx.type = "application/pdf";
-  ctx.body = createReadStream(file);
+  ctx.body = createReadStream(tempFile);
 }
 
 server.use(route.post("/api/convert", convert));
