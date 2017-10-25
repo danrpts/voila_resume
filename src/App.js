@@ -90,7 +90,7 @@ function Editor(props) {
           "Highlands, Scotland",
           "+0 (000) 000-0000",
           "harry@hogwarts.edu",
-          "grifindor.hogwarts.edu/~harpot",
+          "grif.hogwarts.edu/~harpot",
           "linkedin.com/in/harry"
         )}
         onChange={(editor, metadata, value) => {}}
